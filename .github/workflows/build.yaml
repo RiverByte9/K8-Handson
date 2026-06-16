@@ -21,6 +21,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Show Repository Structure
+        run: |
+          pwd
+          ls -R
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -37,19 +42,21 @@ jobs:
           docker build \
             --platform linux/amd64 \
             -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:backend \
-            ./backend
+            ./app/backend
 
       - name: Build Frontend Image
         run: |
           docker build \
             --platform linux/amd64 \
             -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:frontend \
-            ./frontend
+            ./app/frontend  
 
       - name: Push Backend Image
         run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:backend
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:backend
 
       - name: Push Frontend Image
         run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:frontend
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:frontend
