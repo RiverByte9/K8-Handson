@@ -1,0 +1,120 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: flask-deployment
+#   labels:
+#     app: flask
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: flask
+#   template:
+#     metadata:
+#       labels:
+#         app: flask
+#     spec:
+#       containers:
+#       - name: app
+#         image: 292659698930.dkr.ecr.ap-south-1.amazonaws.com/kind-static-app:1.0 
+#         ports:
+#         - containerPort: 5000
+
+
+
+# PS D:\K8-Handson\simpleapp> kubectl apply -f k8s                                
+# deployment.apps/flask-deployment created
+# service/nginx-service created
+# PS D:\K8-Handson\simpleapp> kkubectl get po
+
+# PS D:\K8-Handson\simpleapp> kubectl get po
+# NAME                                READY   STATUS         RESTARTS   AGE
+# flask-deployment-6d99b9948b-cwz49   0/1     ErrImagePull   0          20s
+# flask-deployment-6d99b9948b-dc7t7   0/1     ErrImagePull   0          20s
+# flask-deployment-6d99b9948b-rbdpj   0/1     ErrImagePull   0          20s
+# PS D:\K8-Handson\simpleapp> kubectl describe flask-deployment-6d99b9948b-cwz49
+# error: the server doesn't have a resource type "flask-deployment-6d99b9948b-cwz49"
+# PS D:\K8-Handson\simpleapp> kubectl describe pod flask-deployment-6d99b9948b-cwz49
+# Name:             flask-deployment-6d99b9948b-cwz49
+# Namespace:        default
+# Priority:         0
+# Service Account:  default
+# Node:             minikube/192.168.49.2
+# Start Time:       Fri, 29 May 2026 12:25:28 +0530
+# Labels:           app=flask
+#                   pod-template-hash=6d99b9948b
+# Annotations:      <none>
+# Status:           Pending
+# IP:               10.244.0.184
+# IPs:
+#   IP:           10.244.0.184
+# Controlled By:  ReplicaSet/flask-deployment-6d99b9948b
+# Containers:
+#   app:
+#     Container ID:   
+#     Image:          292659698930.dkr.ecr.ap-south-1.amazonaws.com/kind-static-app:1.0
+#     Image ID:       
+#     Port:           5000/TCP
+#     Host Port:      0/TCP
+#     State:          Waiting
+#       Reason:       ImagePullBackOff
+#     Ready:          False
+#     Restart Count:  0
+#     Environment:    <none>
+#     Mounts:
+#       /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-lwfl7 (ro)
+# Conditions:
+#   Type                        Status
+#   PodReadyToStartContainers   True 
+#   Initialized                 True 
+#   Ready                       False 
+#   ContainersReady             False 
+#   PodScheduled                True 
+# Volumes:
+#   kube-api-access-lwfl7:
+#     Type:                    Projected (a volume that contains injected data from multiple sources)
+#     TokenExpirationSeconds:  3607
+#     ConfigMapName:           kube-root-ca.crt
+#     ConfigMapOptional:       <nil>
+#     DownwardAPI:             true
+# QoS Class:                   BestEffort
+# Node-Selectors:              <none>
+# Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+#                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+# Events:
+#   Type     Reason     Age                From               Message
+#   ----     ------     ----               ----               -------
+#   Normal   Scheduled  54s                default-scheduler  Successfully assigned default/flask-deployment-6d99b9948b-cwz49 to minikube
+#   Normal   BackOff    22s (x2 over 47s)  kubelet            Back-off pulling image "292659698930.dkr.ecr.ap-south-1.amazonaws.com/kind-static-app:1.0"
+#   Warning  Failed     22s (x2 over 47s)  kubelet            Error: ImagePullBackOff
+#   Normal   Pulling    10s (x3 over 48s)  kubelet            Pulling image "292659698930.dkr.ecr.ap-south-1.amazonaws.com/kind-static-app:1.0"
+#   Warning  Failed     10s (x3 over 48s)  kubelet            Failed to pull image "292659698930.dkr.ecr.ap-south-1.amazonaws.com/kind-static-app:1.0": Error response from daemon: Head "https://292659698930.dkr.ecr.ap-south-1.amazonaws.com/v2/kind-static-app/manifests/1.0": no basic auth credentials
+#   Warning  Failed     10s (x3 over 48s)  kubelet            Error: ErrImagePull
+
+#---------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-deployment
+  labels:
+    app: flask
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret # secret name
+      containers:
+      - name: app
+        image: 292659698930.dkr.ecr.ap-south-1.amazonaws.com/kind-static-app:1.0
+         # Always, Never, IfNotPresent
+        imagePullPolicy: Always # default is IfNotPresent 
+        ports:
+        - containerPort: 5000

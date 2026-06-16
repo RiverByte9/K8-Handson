@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: nginx-service
+
+spec:
+  selector:
+    app: nginx
+
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+
+  type: ClusterIP
+
+
+#   PS D:\K8-Handson\Day-1> kubectl apply -f service.yaml
+# service/nginx-service created
+# PS D:\K8-Handson\Day-1> kubectl get service -o wide
+# NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+# kubernetes      ClusterIP   10.96.0.1      <none>        443/TCP    23m   <none>
+# nginx-service   ClusterIP   10.96.219.73   <none>        8080/TCP   9s    app=nginx
+# PS D:\K8-Handson\Day-1> kubectl port-forward service/nginx-service 8800:8080
+# Forwarding from 127.0.0.1:8800 -> 80
+# Forwarding from [::1]:8800 -> 80
+# Handling connection for 8800
+# PS D:\K8-Handson\Day-1> kubectl get pod                                     
+# NAME                              READY   STATUS    RESTARTS   AGE
+# nginx-deployment-96b9d695-5gfrn   1/1     Running   0          16m
+# nginx-deployment-96b9d695-xj8fz   1/1     Running   0          17m
+# PS D:\K8-Handson\Day-1> kubectl describe pod nginx-deployment-96b9d695-5gfrn
+# Name:             nginx-deployment-96b9d695-5gfrn
+# Namespace:        default
+# Priority:         0
+# Service Account:  default
+# Node:             kind-control-plane/172.18.0.2
+# Start Time:       Thu, 28 May 2026 11:44:05 +0530
+# Labels:           app=nginx
+#                   pod-template-hash=96b9d695
+# Annotations:      <none>
+# Status:           Running
+# IP:               10.244.0.10
+# IPs:
+#   IP:           10.244.0.10
+# Controlled By:  ReplicaSet/nginx-deployment-96b9d695
+# Containers:
+#   nginx:
+#     Container ID:   containerd://0a961471c70c61f646ff8200bc607c1e75ba71b55a6e9cbe524ab5574a2027d8
+#     Image:          nginx:latest
+#     Image ID:       docker.io/library/nginx@sha256:5aca99593157f4ae539a5dec1092a0ad8762f8e2eb1789085a13a0f5622369f6
+#     Port:           80/TCP
+#     Host Port:      0/TCP
+#     State:          Running
+#       Started:      Thu, 28 May 2026 11:44:07 +0530
+#     Ready:          True
+#     Restart Count:  0
+#     Environment:    <none>
+#     Mounts:
+#       /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-h7wgs (ro)
+# Conditions:
+#   Type                        Status
+#   PodReadyToStartContainers   True 
+#   Initialized                 True 
+#   Ready                       True 
+#   ContainersReady             True 
+#   PodScheduled                True 
+# Volumes:
+#   kube-api-access-h7wgs:
+#     Type:                    Projected (a volume that contains injected data from multiple sources)
+#     TokenExpirationSeconds:  3607
+#     ConfigMapName:           kube-root-ca.crt
+#     ConfigMapOptional:       <nil>
+#     DownwardAPI:             true
+# QoS Class:                   BestEffort
+# Node-Selectors:              <none>
+# Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+#                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+# Events:
+#   Type    Reason     Age   From               Message
+#   ----    ------     ----  ----               -------
+#   Normal  Scheduled  16m   default-scheduler  Successfully assigned default/nginx-deployment-96b9d695-5gfrn to kind-control-plane
+#   Normal  Pulling    16m   kubelet            Pulling image "nginx:latest"
+#   Normal  Pulled     16m   kubelet            Successfully pulled image "nginx:latest" in 1.624s (1.624s including waiting). Image size: 63120520 bytes.
+#   Normal  Created    16m   kubelet            Created container: nginx
+#   Normal  Started    16m   kubelet            Started container nginx
+# PS D:\K8-Handson\Day-1> 
+
+
+# KAJAL@KAJAL MINGW64 /d/K8-Handson/Day-1 (main)
+# $ curl localhost:8800
+# <!DOCTYPE html>
+# <html>
+# <head>
+# <title>Welcome to nginx!</title>
+# <style>
+# html { color-scheme: light dark; }
+# body { width: 35em; margin: 0 auto;
+# font-family: Tahoma, Verdana, Arial, sans-serif; }
+# </style>
+# </head>
+# <body>
+# <h1>Welcome to nginx!</h1>
+# <p>If you see this page, nginx is successfully installed and working.
+# Further configuration is required for the web server, reverse proxy, 
+# API gateway, load balancer, content cache, or other features.</p>
+
+# <p>For online documentation and support please refer to
+# <a href="https://nginx.org/">nginx.org</a>.<br/>
+# To engage with the community please visit
+# <a href="https://community.nginx.org/">community.nginx.org</a>.<br/>
+# For enterprise grade support, professional services, additional 
+# security features and capabilities please refer to
+# <a href="https://f5.com/nginx">f5.com/nginx</a>.</p>
+
+# <p><em>Thank you for using nginx.</em></p>
+# </body>
+# </html>

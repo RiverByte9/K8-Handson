@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: nginx-deployment
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: nginx
+
+  template:
+    metadata:
+      labels:
+        app: nginx
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+
+
+
+# kubectl apply -f deployment.yaml
+# deployment.apps/nginx-deployment created
+# PS D:\K8-Handson\Day-1> kubectl get deploy              
+# NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+# nginx-deployment   2/2     2            2           9s
+
+# PS D:\K8-Handson\Day-1> kubectl get pod         
+# NAME                              READY   STATUS    RESTARTS   AGE
+# nginx-deployment-96b9d695-9bvnc   1/1     Running   0          89s
+# nginx-deployment-96b9d695-xj8fz   1/1     Running   0          42s
+
+# PS D:\K8-Handson\Day-1> kubectl delete pod nginx-deployment-96b9d695-9bvnc 
+# pod "nginx-deployment-96b9d695-9bvnc" deleted
+# PS D:\K8-Handson\Day-1> kubectl get pod                                    
+# NAME                              READY   STATUS    RESTARTS   AGE
+# nginx-deployment-96b9d695-5gfrn   1/1     Running   0          3s
+# nginx-deployment-96b9d695-xj8fz   1/1     Running   0          65s
+
+# Watch:
+# PS D:\K8-Handson\Day-1> kubectl get pod -w
