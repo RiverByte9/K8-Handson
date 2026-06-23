@@ -27,7 +27,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm install express http-proxy-middleware
+RUN npm install express http-proxy-middleware prom-client
 
 # Copy built assets from build stage
 COPY --from=build /app/build ./build

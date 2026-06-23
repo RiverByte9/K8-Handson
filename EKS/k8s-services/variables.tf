@@ -25,3 +25,28 @@ variable "awsloadbalancercontroller_sa" {
   type = string
   default = "aws-load-balancer-controller"
 }
+
+
+variable "app_namepace" {
+  description = "The name of the application namespace"
+  type = string
+  default = "3-tier-app-eks"
+}
+
+variable "domain_name" {
+  description = "The domain name of the application"
+  type = string
+  default = "devopsnotebook.xyz"
+}
+
+variable "app_subdomain" {
+  description = "The subdomain of the application"
+  type = string
+  default = "devopsdozo"
+}
+
+variable "prefix" {
+  description = "The prefix of the application"
+  type = string
+  default = "3tier-devopsdozo"
+}

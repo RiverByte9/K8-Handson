@@ -27,3 +27,10 @@ variable "vpc_name" {
   type        = string
   default     = "eks-vpc-may26"
 }
+
+
+variable "aws_region" {
+  description = "The region of the AWS"
+  type        = string
+  default     = "us-east-1"
+}

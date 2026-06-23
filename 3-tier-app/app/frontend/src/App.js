@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Leaderboard from './components/Leaderboard';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Quiz from './components/Quiz';
@@ -7,15 +8,19 @@ import QuestionManager from './components/QuestionManager';
 import WikiList from './components/wiki/WikiList';
 import WikiPage from './components/wiki/WikiPage';
 import WikiEditor from './components/wiki/WikiEditor';
+import MetricsTracker from './components/MetricsTracker';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
+      <MetricsTracker />
+      <div className="min-h-screen bg-gray-50">
         <Navbar />
+        <main className="pb-12">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/quiz/:topic" element={<Quiz />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/manage-questions" element={<QuestionManager />} />
           
           {/* Wiki Routes */}
@@ -25,6 +30,7 @@ function App() {
           <Route path="/wiki/edit/:slug" element={<WikiEditor />} />
           <Route path="/wiki/:slug" element={<WikiPage />} />
         </Routes>
+        </main>
       </div>
     </Router>
   );

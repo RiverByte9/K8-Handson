@@ -14,7 +14,7 @@ resource "helm_release" "aws_load_balancer_controller" {
     },
     {
       name  = "region"
-      value = "ap-south-1"
+      value = "us-east-1"
     },
     {
       name  = "vpcId"
@@ -222,7 +222,18 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
           "elasticloadbalancing:CreateListener",
           "elasticloadbalancing:DeleteListener",
           "elasticloadbalancing:CreateRule",
-          "elasticloadbalancing:DeleteRule"
+          "elasticloadbalancing:DeleteRule",
+          "elasticloadbalancing:AddListenerCertificates",
+          "elasticloadbalancing:RemoveListenerCertificates",
+          "elasticloadbalancing:ModifyListener",
+          "elasticloadbalancing:ModifyListenerAttributes",
+          "elasticloadbalancing:ModifyRule",
+          "elasticloadbalancing:ModifyRuleAttributes",
+          "elasticloadbalancing:ModifyTargetGroup",
+          "elasticloadbalancing:ModifyTargetGroupAttributes",
+          "elasticloadbalancing:ModifyTargetGroupAttributes",
+          "elasticloadbalancing:ModifyTargetGroupAttributes",
+          "elasticloadbalancing:ModifyTargetGroupAttributes",
         ]
         Resource = "*"
       },

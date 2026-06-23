@@ -33,7 +33,7 @@ resource "kubernetes_config_map" "backend" {
     DB_PORT         = aws_db_instance.postgres.port,
     DB_NAME         = aws_db_instance.postgres.db_name,
     # CORS allowed origins
-    ALLOWED_ORIGINS = "https://devopsdozo.livingdevops.org,http://devopsdozo.livingdevops.org"
+    ALLOWED_ORIGINS = "https://devopsdozo.devopsnotebook.xyz,http://devopsdozo.devopsnotebook.xyz"
   }
 
 depends_on = [ kubernetes_namespace.namespace ]
@@ -72,9 +72,47 @@ resource "kubernetes_config_map" "frontend" {
 depends_on = [ kubernetes_namespace.namespace ]
 }
 
+# backend service
 
+resource "kubernetes_service" "backend" {
+  metadata {
+    name = "backend"
+    namespace = var.app_namepace
+  }
 
+  spec {
+    selector = {
+      app = "backend"
+    }
+    port {
+      port = 8000
+    }
+    type = "ClusterIP"
+  }
 
+  depends_on = [ kubernetes_namespace.namespace ]
+}
+
+# frontend service
+
+resource "kubernetes_service" "frontend" {
+  metadata {
+    name = "frontend"
+    namespace = var.app_namepace
+  }
+
+  spec {
+    selector = {
+      app = "frontend"
+    }
+    port {
+      port = 80
+    }
+    type = "ClusterIP"
+  }
+
+  depends_on = [ kubernetes_namespace.namespace ]
+}
 
 # ingress   
 
@@ -103,6 +141,9 @@ resource "kubernetes_ingress_v1" "app_ingress_tls" {
 
       # Tags for the ALB
       "alb.ingress.kubernetes.io/tags" = "Environment=production,ManagedBy=Terraform,Name=${var.app_subdomain}-ingress"
+
+      # ALB group annotation
+      "alb.ingress.kubernetes.io/group.name" = "devopsdozo"
     }
   }
 

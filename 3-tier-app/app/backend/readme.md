@@ -18,9 +18,7 @@ export FLASK_APP=run.py
 # On Windows:
 <!-- set FLASK_APP=run.py -->
 
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
+./migrate.sh
 
 # run the app
 python run.py
@@ -101,12 +99,10 @@ CREATE DATABASE devops_learning;
 
 6. Run database migrations:
 ```bash
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
+./migrate.sh
 ```
 
-7. Seed the database with initial data:
+7. Seed the database with initial data (also runs automatically when topics table is empty):
 ```bash
 python seed_data.py
 ```
@@ -173,11 +169,49 @@ curl -X POST http://localhost:8000/api/quiz/submit \
 4. Create and run new migrations
 
 ### Database Migrations
-When changing models:
+
+Migration files live in `migrations/versions/`. The script `migrate.sh` wraps Flask-Migrate/Alembic for production-safe upgrades and downgrades.
+
+**Upgrade to latest (default):**
+```bash
+./migrate.sh
+# or
+flask db upgrade head
+```
+
+**Check current revision:**
+```bash
+MIGRATION_ACTION=current ./migrate.sh
+# or
+flask db current
+```
+
+**Downgrade one step** (example: from `b7c3d4e5f6a1` back to `a05e32811b08`):
+```bash
+MIGRATION_ACTION=downgrade MIGRATION_TARGET=a05e32811b08 ./migrate.sh
+# or
+flask db downgrade a05e32811b08
+```
+
+**Stamp an existing database** (mark revision without running DDL):
+```bash
+MIGRATION_ACTION=stamp MIGRATION_TARGET=head ./migrate.sh
+```
+
+| Variable | Values | Default |
+|----------|--------|---------|
+| `MIGRATION_ACTION` | `upgrade`, `downgrade`, `stamp`, `current` | `upgrade` |
+| `MIGRATION_TARGET` | revision id or `head` | `head` |
+
+Revision chain: `52e9cadd17f8` → `a05e32811b08` → `b7c3d4e5f6a1` (head).
+
+When changing models locally:
 ```bash
 flask db migrate -m "Description of changes"
-flask db upgrade
+flask db upgrade head
 ```
+
+**Never** drop `alembic_version`, delete migration files, or reset migrations in production.
 
 ## Troubleshooting
 
@@ -193,6 +227,7 @@ flask db upgrade
    - Check file structure matches project structure
 
 3. Migration errors:
-   - Remove the migrations folder and reinitialize
-   - Check database connection
-   - Ensure models are properly defined
+   - Check database connection and credentials
+   - Run `flask db current` and compare with `flask db heads`
+   - Use `MIGRATION_ACTION=downgrade` only with an explicit target revision
+   - Do not drop `alembic_version` or delete migration files in production

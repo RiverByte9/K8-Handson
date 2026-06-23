@@ -17,7 +17,7 @@ metadata:
     
     # Use the certificate managed by cert-manager
     alb.ingress.kubernetes.io/ssl-policy: "ELBSecurityPolicy-TLS-1-2-2017-01"
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:879381241087:certificate/d98cc133-b8f7-43e4-8ecb-081f5887acc9
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:292659698930:certificate/66742c6d-a313-4b7b-9f0d-4899e90b3751
     
     # Add this annotation to use the certificate from cert-manager
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": {"Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
@@ -25,10 +25,10 @@ spec:
   ingressClassName: "alb"
   tls:
   - hosts:
-    - "devopsdozo.livingdevops.org"
+    - "devopsdozo.devopsnotebook.xyz"
 
   rules:
-  - host: "devopsdozo.livingdevops.org"  # Replace with your actual domain
+  - host: "devopsdozo.devopsnotebook.xyz"  # Replace with your actual domain
     http:
       paths:
       - path: /

@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.12.1"
+  required_version = "1.13.4"
   required_providers {
     aws = {
       source = "hashicorp/aws"
@@ -23,9 +23,9 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket = "state-bucket-879381241087"
-    key = "eks-may-2026/k8s-services/terraform.tfstate"
-    region = "ap-south-1"
+    bucket = "state-bucket-123456799"
+    key = "eks-may-2026/3-tier-app/terraform.tfstate"
+    region = "us-east-1"
     encrypt = true
     use_lockfile = true
   }

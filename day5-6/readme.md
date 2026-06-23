@@ -36,3 +36,8 @@ password: Admin1234
 my dockerhub for images
 
 https://hub.docker.com/repository/docker/livingdevopswithakhilesh/devopsdozo/general
+
+
+![alt text](image.png)
+
+![alt text](image-1.png)

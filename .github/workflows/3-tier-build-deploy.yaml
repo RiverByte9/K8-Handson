@@ -1,0 +1,85 @@
+# build and deploy 3-tier app
+
+name: 3-tier-build-deploy
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      frontend_image: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend
+      frontend_path: 3-tier-app/app/frontend
+      backend_image: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend
+      backend_path: 3-tier-app/app/backend
+      aws_region: us-east-1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws_region }}
+
+      - name: login to ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build frontend image
+        working-directory: ${{ env.frontend_path }}
+        run: docker buildx build -t ${{ env.frontend_image }}:${{ github.sha }} . --push
+
+      - name: Build backend image
+        working-directory: ${{ env.backend_path }}
+        run: docker buildx build -t ${{ env.backend_image }}:${{ github.sha }} . --push
+
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      path: 3-tier-app/k8s/menifests     
+      backend_repo: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend
+      backend_tag: ${{ github.sha }}
+      frontend_repo: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend
+      frontend_tag: ${{ github.sha }}
+      db_migration_repo: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend
+      db_migration_tag: ${{ github.sha }}
+
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Update backend image
+        working-directory: ${{ env.path }}
+        run: yq -i '.spec.template.spec.containers[0].image = "879381241087.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend:8d5d9bff8f81d2a6ab1ca654e268cdfdb17436cf"' backend.yaml
+
+      - name: Update frontend image
+        working-directory: ${{ env.path }}
+        run: yq -i '.spec.template.spec.containers[0].image = "879381241087.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend:8d5d9bff8f81d2a6ab1ca654e268cdfdb17436cf"' frontend.yaml
+
+      - name: Update db migration image
+        working-directory: ${{ env.path }}
+        run: yq -i '.spec.template.spec.containers[0].image = "879381241087.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend:8d5d9bff8f81d2a6ab1ca654e268cdfdb17436cf"' db-migration.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update backend and frontend images"
+          git push

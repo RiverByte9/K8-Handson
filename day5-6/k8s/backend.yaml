@@ -25,10 +25,10 @@ spec:
       initContainers:
       - name: wait-for-db
         image: busybox
-        command: ['sh', '-c', 'until nslookup devopsdozo.cvik8accw2tk.ap-south-1.rds.amazonaws.com; do echo waiting for database; sleep 2; done;']
+        command: ['sh', '-c', 'until nslookup devopsdozo.cd2q00q8mfvm.ap-south-1.rds.amazonaws.com; do echo waiting for database; sleep 2; done;']
       containers:
       - name: backend
-        image: 879381241087.dkr.ecr.ap-south-1.amazonaws.com/devopsdozo:backend
+        image: 292659698930.dkr.ecr.ap-south-1.amazonaws.com/devopsdozo:backend
         imagePullPolicy: Always
         ports:
         - containerPort: 8000

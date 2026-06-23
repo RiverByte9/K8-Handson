@@ -1,9 +1,42 @@
 const express = require('express');
 const path = require('path');
+const client = require('prom-client');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 const PORT = process.env.PORT || 80;
+const METRICS_PORT = process.env.METRICS_PORT || 9091;
+
+client.collectDefaultMetrics({ prefix: 'frontend_process_' });
+
+const httpRequestsTotal = new client.Counter({
+  name: 'frontend_server_http_requests_total',
+  help: 'Total HTTP requests handled by the frontend server',
+  labelNames: ['method', 'path', 'status'],
+});
+
+const httpRequestDuration = new client.Histogram({
+  name: 'frontend_server_http_request_duration_seconds',
+  help: 'HTTP request duration for the frontend server',
+  labelNames: ['method', 'path'],
+  buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0],
+});
+
+function normalizePath(url) {
+  if (url === '/health' || url === '/metrics') {
+    return url;
+  }
+  if (url.startsWith('/api/')) {
+    return '/api/*';
+  }
+  if (url.startsWith('/static/')) {
+    return '/static/*';
+  }
+  if (!url.includes('.')) {
+    return '/*';
+  }
+  return url;
+}
 
 // Backend URL configuration
 const BACKEND_URL = process.env.BACKEND_URL || 'http://backend:8000';
@@ -15,6 +48,17 @@ console.log(`Port: ${PORT}`);
 // Log all requests for debugging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const routePath = normalizePath(req.path);
+    const durationSeconds = (Date.now() - start) / 1000;
+    httpRequestsTotal.labels(req.method, routePath, String(res.statusCode)).inc();
+    httpRequestDuration.labels(req.method, routePath).observe(durationSeconds);
+  });
   next();
 });
 
@@ -50,6 +94,11 @@ app.get('/health', (req, res) => {
   res.status(200).send('healthy');
 });
 
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.end(await client.register.metrics());
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -68,4 +117,14 @@ app.use((err, req, res, next) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Frontend server running on http://0.0.0.0:${PORT}`);
   console.log(`API requests will be proxied to: ${BACKEND_URL}`);
+});
+
+const metricsApp = express();
+metricsApp.get('/metrics', async (req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.end(await client.register.metrics());
+});
+
+metricsApp.listen(METRICS_PORT, '0.0.0.0', () => {
+  console.log(`Metrics server running on http://0.0.0.0:${METRICS_PORT}/metrics`);
 });

@@ -5,6 +5,7 @@ data "aws_vpc" "eks_vpc" {
   }
 }
 
+# data.aws_vpc.eks_vpc.id
 
 data "aws_eks_cluster" "cluster" {
   name = var.eks_cluster_name
