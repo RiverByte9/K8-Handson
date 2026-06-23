@@ -8,7 +8,7 @@ on:
         required: true
         type: choice
         options:
-          - EKS/Core-Cluster
+          - EKS/core-cluster
           - EKS/k8s-services
           - 3-tier-app/infra
 
