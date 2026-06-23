@@ -137,7 +137,7 @@ resource "aws_route53_record" "argocd" {
 
   alias {
     name                   = kubernetes_ingress_v1.argocd_ingress_tls.status[0].load_balancer[0].ingress[0].hostname
-    zone_id                = "ZP97RAFLXTNZK"
+    zone_id                = "Z35SXDOTRQ7X7K"
     evaluate_target_health = true
   }
 
