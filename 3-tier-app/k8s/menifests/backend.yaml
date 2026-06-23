@@ -23,9 +23,9 @@ spec:
       nodeSelector:
         kubernetes.io/arch: amd64
       initContainers:
-        - name: wait-for-db
-          image: busybox
-          command: ['sh', '-c', 'until nslookup devopsdozo-db.cd2q00q8mfvm.us-east-1.rds.amazonaws.com; do echo waiting for database; sleep 2; done;']
+            - name: wait-for-db
+              image: busybox
+              command: ['sh', '-c', 'until nslookup devopsdozo-db.ckt8w2yyag5r.us-east-1.rds.amazonaws.com; do echo waiting for database; sleep 2; done;']
       containers:
         - name: backend 
           image: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend:a6a0a1b7d37fc5be8ce27ab1ab4bdf2a2b9a073f
