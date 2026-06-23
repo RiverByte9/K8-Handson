@@ -23,7 +23,7 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket = "state-bucket-879381241087"
+    bucket = "state-bucket-123456799"
     key = "eks-may-2026/k8s-services/terraform.tfstate"
     region = "us-east-1"
     encrypt = true

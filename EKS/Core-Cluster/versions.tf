@@ -14,7 +14,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket       = "state-bucket-879381241087"
+    bucket       = "state-bucket-123456799"
     key          = "eks-may-2026/eks-core-cluster/terraform.tfstate"
     region       = "us-east-1"
     encrypt      = true

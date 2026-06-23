@@ -25,7 +25,7 @@ spec:
       initContainers:
         - name: wait-for-db
           image: busybox
-          command: ['sh', '-c', 'until nslookup devopsdozo-db.cvik8accw2tk.us-east-1.rds.amazonaws.com; do echo waiting for database; sleep 2; done;']
+          command: ['sh', '-c', 'until nslookup devopsdozo-db.cd2q00q8mfvm.us-east-1.rds.amazonaws.com; do echo waiting for database; sleep 2; done;']
       containers:
         - name: backend 
           image: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend:341ae01bcb97ce89b38f9fed86dac0b18c9d76a0

@@ -3,7 +3,7 @@
 This is the second part. The first assignment got you a cluster and an app running, with the load balancer controller and a first look at Ingress. These two classes finish the Ingress and HTTPS story properly, then move everything we did by hand into Terraform, and start building the CI/CD pipeline that deploys it all.
 
 Same rule as before. Do every part. Break things on purpose. Write down what failed and how you fixed it.
-
+ 
 A note before you start. There is almost no new concept in the second half of this work. It is the same things we already did, just moved into Terraform and into a pipeline. If a part feels hard, it is because the concept was not solid the first time. Go back to the recording for that piece before you move on.
 
 ## What you are finishing
