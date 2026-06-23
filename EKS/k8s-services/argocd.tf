@@ -14,7 +14,7 @@ resource "helm_release" "argocd" {
   namespace  = kubernetes_namespace_v1.argocd.metadata[0].name
 
   set = [
-    {
+    {  
       name  = "server.service.type"
       value = "ClusterIP"
     },
