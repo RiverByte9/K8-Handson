@@ -1,8 +1,9 @@
 terraform {
-required_version = ">= 1.9.0"
+  required_version = ">= 1.9.0"
+
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 6.0"
     }
     kubernetes = {
@@ -13,20 +14,17 @@ required_version = ">= 1.9.0"
       source  = "hashicorp/helm"
       version = "3.1.1"
     }
-     kubectl = {
+    kubectl = {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14.0"
     }
   }
-}
 
-
-terraform {
   backend "s3" {
-    bucket = "state-bucket-123456799"
-    key = "eks-may-2026/k8s-services/terraform.tfstate"
-    region = "us-east-1"
-    encrypt = true
+    bucket       = "state-bucket-123456799"
+    key          = "eks-may-2026/k8s-services/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
     use_lockfile = true
   }
-}   
+}
