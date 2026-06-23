@@ -5,7 +5,6 @@ data "aws_route53_zone" "main" {
 }
 
 # Create the certificate
-
 resource "aws_acm_certificate" "app" {
   domain_name       = "${var.app_subdomain}.${var.domain_name}"
   validation_method = "DNS"
@@ -39,6 +38,12 @@ resource "aws_acm_certificate_validation" "app" {
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
+# Wait for ALB to assign hostname to the Ingress
+resource "time_sleep" "wait_for_app_alb" {
+  depends_on      = [kubernetes_ingress_v1.app_ingress_tls]
+  create_duration = "120s"
+}
+
 # Create Route53 alias record to point subdomain to ALB
 resource "aws_route53_record" "app" {
   zone_id = data.aws_route53_zone.main.zone_id
@@ -47,9 +52,9 @@ resource "aws_route53_record" "app" {
 
   alias {
     name                   = kubernetes_ingress_v1.app_ingress_tls.status[0].load_balancer[0].ingress[0].hostname
-    zone_id                = "ZP97RAFLXTNZK"
+    zone_id                = "Z35SXDOTRQ7X7K"
     evaluate_target_health = true
   }
 
-  depends_on = [kubernetes_ingress_v1.app_ingress_tls]
+  depends_on = [time_sleep.wait_for_app_alb]
 }
