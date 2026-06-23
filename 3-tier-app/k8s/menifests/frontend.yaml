@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend 
+  name: frontend
   namespace: 3-tier-app-eks
   labels:
     app: frontend
@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend:e490f9b-metrics
+          image: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend:a6a0a1b7d37fc5be8ce27ab1ab4bdf2a2b9a073f
           imagePullPolicy: Always
           ports:
             - name: http
@@ -74,3 +74,7 @@ spec:
       port: 9091
       targetPort: 9091
       protocol: TCP
+  template:
+    spec:
+      containers:
+        - image: 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend:a6a0a1b7d37fc5be8ce27ab1ab4bdf2a2b9a073f
