@@ -23,7 +23,7 @@ metadata:
   name: devops-quiz-frontend
   namespace: 3-tier-app-eks
   labels:
-    release: kube-prometheus-stack
+    release: kube-prometheus-stack 
 spec:
   namespaceSelector:
     matchNames:
