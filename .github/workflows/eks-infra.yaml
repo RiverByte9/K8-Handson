@@ -30,7 +30,7 @@ on:
         description: "Terraform version"
         required: false
         type: string
-        default: "1.13.4"
+        default: "1.14.7"
 
 jobs:
   infra_apply_destroy:
