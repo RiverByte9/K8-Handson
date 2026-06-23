@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: frontend 
   namespace: 3-tier-app-eks
   labels:
     app: frontend

@@ -3,7 +3,7 @@ kubectl set image deployment/backend backend=879381241087.dkr.ecr.ap-south-1.ama
 
 kubectl set image deployment/frontend frontend=879381241087.dkr.ecr.ap-south-1.amazonaws.com/3tier-devopsdozo-frontend:8d5d9bff8f81d2a6ab1ca654e268cdfdb17436cf -n 3-tier-app-eks
 
-## Database migrations
+## Database migrations 
 
 Run migrations **after** deploying a new backend image. The migration Job must use the **same image tag** as `backend.yaml`.
 
