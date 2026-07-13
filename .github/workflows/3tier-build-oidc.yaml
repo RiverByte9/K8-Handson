@@ -63,12 +63,12 @@ jobs:
             --cache-to type=registry,ref=${{ matrix.service.image }}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true \
             --push .
 
-      # - name: Build backend image
-      #   working-directory: ${{ env.backend_path }}
-      #   run: |
-      #     docker buildx build \
-      #       --platform linux/amd64 \
-      #       -t ${{ env.backend_image }}:${{ github.sha }} \
-      #       --cache-from type=registry,ref=${{ env.backend_image }}:buildcache \
-      #       --cache-to type=registry,ref=${{ env.backend_image }}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true \
-      #       --push .
+      - name: Build backend image
+        working-directory: ${{ env.backend_path }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{ env.backend_image }}:${{ github.sha }} \
+            --cache-from type=registry,ref=${{ env.backend_image }}:buildcache \
+            --cache-to type=registry,ref=${{ env.backend_image }}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true \
+            --push .
