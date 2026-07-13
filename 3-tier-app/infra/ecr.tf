@@ -4,10 +4,10 @@ resource "aws_ecr_repository" "backend" {
   name = "${var.prefix}-backend"
 }
 
-# 879381241087.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend
+# 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-backend
 # create ecr repository for frontend
 
 resource "aws_ecr_repository" "frontend" {
   name = "${var.prefix}-frontend"
 }
-# 879381241087.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend
+# 292659698930.dkr.ecr.us-east-1.amazonaws.com/3tier-devopsdozo-frontend

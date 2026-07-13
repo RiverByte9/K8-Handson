@@ -1,0 +1,16 @@
+name: 2-tierapp
+image:
+  repository: nginx
+  tag: latest
+
+  pullPolicy: IfNotPresent
+
+replicas: 3
+
+
+privateRegistry:
+  enabled: false
+  secretName: ecr-secret
+
+
+# docker push livingdevopswithakhilesh/studentportal:tagname

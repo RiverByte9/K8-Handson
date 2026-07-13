@@ -1,0 +1,74 @@
+# build and deploy 3-tier app
+
+name: oidc-3-tier-build-deploy
+on:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - '3-tier-app/app/**'
+  workflow_dispatch:
+
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  aws_region: ap-south-1
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service:
+          - name: frontend
+            image: 292659698930.dkr.ecr.ap-south-1.amazonaws.com/3tier-devopsdozo-frontend
+            path: 3-tier-app/app/frontend
+          - name: backend
+            image: 292659698930.dkr.ecr.ap-south-1.amazonaws.com/3tier-devopsdozo-backend
+            path: 3-tier-app/app/backend
+    # env:
+    #   frontend_image: 292659698930.dkr.ecr.ap-south-1.amazonaws.com/3tier-devopsdozo-frontend
+    #   frontend_path: 3-tier-app/app/frontend
+    #   backend_image: 292659698930.dkr.ecr.ap-south-1.amazonaws.com/3tier-devopsdozo-backend
+    #   backend_path: 3-tier-app/app/backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::292659698930:role/GithuActionOIDC
+          aws-region: ${{ env.aws_region }}
+
+      - name: login to ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build ${{ matrix.service.name }} image
+        working-directory: ${{ matrix.service.path }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{ matrix.service.image }}:${{ github.sha }} \
+            --cache-from type=registry,ref=${{ matrix.service.image }}:buildcache \
+            --cache-to type=registry,ref=${{ matrix.service.image }}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true \
+            --push .
+
+      # - name: Build backend image
+      #   working-directory: ${{ env.backend_path }}
+      #   run: |
+      #     docker buildx build \
+      #       --platform linux/amd64 \
+      #       -t ${{ env.backend_image }}:${{ github.sha }} \
+      #       --cache-from type=registry,ref=${{ env.backend_image }}:buildcache \
+      #       --cache-to type=registry,ref=${{ env.backend_image }}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true \
+      #       --push .
